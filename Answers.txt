@@ -1,0 +1,52 @@
+1. (1 point) How many bits does N have? (Hint: For the number of bits in N, try the
+java.math.BigInteger class.)
+
+200 bits (N.bitLength()). In hex, N = 0xa0fc1b139270cd680ea9e98a13be4aa425abad063673c39c4b.
+
+2. (1 point) What are the p and q values that Bob used in the key generation process?
+How many bits does p have? How many bits does q have?
+(Hint: Use Sage (see instructions below) or find an online prime factorization tool kit
+to factor N.)
+
+N was factored with SageMath (F = factor(N), then F). Brute force over 2^128 candidates is hopeless, 
+but a 200-bit N is within reach of modern factoring algorithms (ECM / quadratic sieve), 
+which is what Sage uses.
+
+Value = Hex = Decimal = Bits
+p = 0xae616f582ab5fae1a61bbda7f =   863490933159798076360907020927 = 100
+q = 0xec558ffc5a8e089bf68b0a035 = N / p = 100
+
+The program checks p × q = N and that both pass isProbablePrime(50).
+
+3. (1 point) What is the value of Bob’s private key d? In your solution,
+give enough details about each of your computation steps.
+Discuss what lesson can be learned from this example.
+For this part, if your choice is Java, you must
+(a) Read http://docs.oracle.com/javase/7/docs/api/java/math/BigInteger.html
+(b) Study the code at
+https://users.cs.jmu.edu/wangxx/web/tools/code/BigIntTest.java
+
+1. p − 1 = 0xae616f582ab5fae1a61bbda7e, q − 1 = 0xec558ffc5a8e089bf68b0a034
+2. z = (p − 1)(q − 1) = 0xa0fc1b139270cd680ea9e989fa12daaedd576cce5ca9572198
+3. gcd(e, z) = gcd(0x10001, z) = 0x1, so e has an inverse mod z.
+4. d = e^-1 mod z (extended Euclid, e.modInverse(z)) = 0x7fd18ba20f9cb6ca8f12039684d2e18503c33d65e016a852c9
+5. Check: e × d mod z = 0x1.
+Private key: (N, d) = (0xa0fc1b139270cd680ea9e98a13be4aa425abad063673c39c4b, 0x7fd18ba20f9cb6ca8f12039684d2e18503c33d65e016a852c9).
+
+4. (3 points) Let’s assume that the above public key is used for RSA encryption and
+Alice has already received it in a reliable way. How will Alice perform the public key
+encryption for a message m = 3 and what is the value of the ciphertext? (Hint: check
+java.math.BigInteger and its methods: modPow (. . . ) and modInverse (. . . ).)
+
+Alice uses Bob's public key (N, e) = (0xa0fc1b139270cd680ea9e98a13be4aa425abad063673c39c4b, 0x10001) and computes c = 3^65537 mod N with square-and-multiply (m.modPow(e, N)). Since e = 2^16 + 1 = binary 1 0000 0000 0000 0001, this is 16 squarings and 1 multiplication: square 3 sixteen times mod N to get 3^65536, then multiply by 3.
+c = 0x4e73011aebdb44778f8847ba74be87dfb982fa61a866c45096
+
+5. (3 points) For the above ciphertext, decrypt it and show sufficient details on how you
+decrypt it.
+
+Bob (or anyone who factored N) computes m2 
+= 
+c^d mod N = 0x4e73011aebdb44778f8847ba74be87dfb982fa61a866c45096 ^ 
+0x7fd18ba20f9cb6ca8f12039684d2e18503c33d65e016a852c
+9 mod 0xa0fc1b139270cd680ea9e98a13be4aa425abad063673c39c4b (c.modPow(d, N), square-and-multiply over the 199 bits of d).
+m2 = 0x3, equal to the original m, which confirms d is correct.
