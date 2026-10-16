@@ -1,0 +1,172 @@
+Task 2.3 - A real-world example
+
+Given: p and q in hex from [REAL-WORLD EXAMPLE] in
+https://users.cs.jmu.edu/wangxx/web/tools/code/rsa-bignumbers.txt,
+and e = 2^16 + 1 = 65537 = 0x10001.
+(Long hex values are wrapped across lines; each is one number.)
+
+p =
+    0xc86422b12e3a0c79cbe9f10c47a436fc54a71309214a3455054fca5912e442c32247ffdc78
+    2e574c96d7d43e60e383d7f0f091f08909f2629c5ad1bd5ce2427333dedb281abb1bffcbfb28
+    14b402dc29bf5406d6e749ba57e1e6843f0111875a34439aeb2aa6c554d71b8cbaefbe0f6a4c
+    7a0145d75afda323c7520a29d4d3d799a676977a0d3bd0f3411023c3ab106ee5fb0d2fbaa64e
+    85fb71b6b76ebebbbfcd1ffd1de93302e90a3fefe0ffcb95a3da7ce6e2dcdd973873b96dd939
+    763025
+
+q =
+    0xd062fa3d79191304a4a64d39dc3b5ca757b9b740304825b13d05d17ffcf3b1e033dbffbe31
+    eeea0b908f8ed36ebc2d1b1db3a094e2ddd4976549e225981ac6f9586a31f79b90cc41ed4c06
+    9d1306482345c8cc61fc4567bd2043484f8ac2fca32d7690c0881889b44a365795b0af07046a
+    6bc468b10570033e2b6ad8d7702266c6d6ca5eec75224039998f719f74ad8fdebe9c4347a71e
+    6cd96e03796b570f459c23c6ca250761e741f957d4b9f24df783e6c2ebe91e64863b710989da
+    81a261
+
+1. (2 points) What is Bob's public key?
+
+N = p * q (p.multiply(q)). Bob's public key is (N, e) with e = 0x10001 and
+
+N =
+    0xa31ed66725eb1cc8a37f05ef87c9b3a6811db83796bafda4e825f54903cefe885d295e24b6
+    fc773f9be760cea6e7a5726e4807767aa553a01dc4b2be815c478c1579c1ffa1346028af5c83
+    854bd7e5b8e3c346881079364071f8e9148847ef765035a5a75041ccb4f10bc9d68deb13966c
+    ec52c8c769e2a6f3fd695e8ccc6de1414032a6ae9898e5e09ee0cc5a9dc598f6b4d44c7c72e4
+    64f96f33159bc5ae19afaead88cebd2dda4bfb70bdaa1c863d560c43742b51605cdf854fa045
+    73b6973f3d3fd9455087135f907cd44a40075e545cfb037e3ad6fc8293db3f622ad54e14aac5
+    d4563df56bd09426af394b915fbfa20d905101f1c0e02f3e09518fe2edd2dc5fb5401edd854a
+    ad1590b25d62afc4cd86bdcbc18fdc1b6e67db1bf0343ed8d15bc71dd96929832a624fb042ac
+    9684bb78de2bbce48031904c659cf5b020f85b042b7c85f0b29c003bfa4ff65dd6b005bc0696
+    dc709da4b44d2970fc56da5b2eef5580bc09f3054997d550fa9eab3244a863bfe0eb813570c0
+    0654e4a805
+
+2. (1 point) How many bits does Bob's N have? How many bits does p have? How many
+bits does q have?
+
+N: 3072 bits
+p: 1536 bits
+q: 1536 bits
+(N.bitLength(), p.bitLength(), q.bitLength())
+
+3. (3 points) What is Bob's private key?
+
+Step 1. z = (p - 1)(q - 1):
+
+z =
+    0xa31ed66725eb1cc8a37f05ef87c9b3a6811db83796bafda4e825f54903cefe885d295e24b6
+    fc773f9be760cea6e7a5726e4807767aa553a01dc4b2be815c478c1579c1ffa1346028af5c83
+    854bd7e5b8e3c346881079364071f8e9148847ef765035a5a75041ccb4f10bc9d68deb13966c
+    ec52c8c769e2a6f3fd695e8ccc6de1414032a6ae9898e5e09ee0cc5a9dc598f6b4d44c7c72e4
+    64f96f33159bc5ae19afaead88cebd2dda4bfb70bdaa1c863d560c43742b51605cdf854fa045
+    73b695a67622ea9dfd6794ef003e8e266073baa7fc30ba2ca87cf6403e3f665252e0aabe86c6
+    39ac20b413a92cc39d69abe06cb0fddb0ae51a2ac6de8a8a265c92d9814693529589d2f54391
+    65e6deeb543e62bfb0b384e8326dc719449b4c901bb0417717301b6b1a1a2061d87dff0fd596
+    27cdd5b32fa35c76d9cf9d8f829bb0b9e297ddc335160392a16f259c64ecd69fd7eb4c129394
+    8f03aacfd492f896e68bd4f1eb2b6d7281a522b910501f973cbb0fd3e0fe94f9e4efc2864648
+    a340ecd580
+
+Step 2. gcd(e, z) = 0x1, so d = e^-1 mod z exists; compute it with extended Euclid
+(e.modInverse(z)). Check: e * d mod z = 0x1.
+
+Bob's private key is (N, d), with N as in Q1 and
+
+d =
+    0x2887d5063429c331274ebc8ed3d28e4ce4f01981d67607e81db6b0c7bfa6832026e5cc7a9a
+    ed084449dca7f5310b85d4750a78b03bb130a22c435f966e561b80f72515cb0aa714ed870519
+    b8d92b7fecfccadc8f9a6843cea7830d870885b73e5297c1dd5cd7bca188f340e78ac3ca4e2a
+    2a5e377d3516181dafedaa8c998f03d54eba472842ca5af401062240b1cb1342d993969da57e
+    928857d4fd9d82f4cb7517960ed42fb560f458399f26d187995df4161e9b54d0f8c2a14133b5
+    8e16e4004482508189215fa4330f580ab91488608d0d1e7552381a87c3efc4e0d7aef33dfc06
+    ecf593faaa97f283786d7543823e48155113b3f8c5092eab3cf4eb9817c30d800b9fff46e9cf
+    0adedeace275cddb8b704fa9d23deca69ea167d8b6c888bbaa8b4d84c32b92b83d2eb15da1d8
+    79736f91e25858f53f119338c15f25fe4a0b2a1302f1c15981bb38412fe299418648f4d1f8d1
+    84e7885db39801249d8c49110339fb2be482bfa9f41fb479c3a14741823a3f92080c7aed1a31
+    9a3edb9a01
+
+4. (3 points) Alice has Bob's public key. How will Alice perform the plain RSA encryption
+for a message m = 3 and what is the value of the ciphertext?
+
+Alice computes c = 3^65537 mod N with Bob's public key (m.modPow(e, N)). Because
+e = 2^16 + 1 = binary 1 0000 0000 0000 0001, square-and-multiply needs 16 squarings
+and 1 multiplication: square 3 sixteen times mod N to get 3^(2^16), then multiply
+once more by 3 mod N.
+
+c =
+    0x3f9daa38f2b3be7fb85becae037a1b005c857c710558750147628b837116596154196b7e77
+    a14a548e9b3da81c32e2fae5fcaebf1d42e2c44b8ea9fcd879ce9bf8f4dbcb25e0abec4d26f6
+    8cac7058fb165807b0c762e5a481954f0511f51656a2a5d3c06022f8509b81170f34c70606a1
+    fe4ed3385561ad492096283e2a7877234658441d2053a02a90d7ee01e8c4d40fb1f0442d8e39
+    a8ee2195689c1a95a2ad0b141faf60ba6c8132fd641f2e49cd85eda5bea27119c482f6044e67
+    fc166bb6cec2f395459521e4a3dab80592f10a314bcce0aa86067dae2cdd1d8b1a95dc14a4ed
+    07c8f3743e61edd5e507f7db643c3cb372d095edaf874fdfb5343d2f17a86401a525850cc5ba
+    c347292167688b756c56ab25fa938f1c35acbabca6a225f441a458062b7d922f8c2a14a5a161
+    44460b2c8b5d74b42cc70d86fe2e6b814ecab6e78decdf7593eee09fa50d2c90c6feb24a1c55
+    1e11c73f91db36cc3b25f96f7197d3cc823058fba9e5779bd0fc532c9e39c90d6080d7be3825
+    434dd0a1b3
+
+5. (3 points) For the ciphertext in the last question, how will Bob decrypt it?
+
+Bob computes m2 = c^d mod N, with c from Q4, d from Q3 and N from Q1
+(c.modPow(d, N), square-and-multiply over the 3070 bits of d).
+
+m2 = 0x3, equal to m, so encryption and decryption are consistent.
+
+6. (3 points) Measure the speed of RSA decryption by running it 1000 times.
+
+The program times 1000 decryptions with System.currentTimeMillis() (after one
+warm-up call) and uses speed = bit size of N / (total seconds / 1000).
+
+1000 decryptions:     18773 ms
+Time per decryption:  18.773 / 1000 = 0.018773 s
+Speed:                3072 / 0.018773 = 163,639 bps = 163.639 kbps
+In Gbps:              0.000163639 Gbps
+
+Is this good enough for gigabit Internet? No. 1 Gbps = 1,000,000 kbps, so a dedicated
+decrypting device at 163.639 kbps would be about 6,100 times too slow and would
+become the bottleneck.
+
+7. (5 points) Implement CRT, use it to decrypt the ciphertext of m = 3, and measure
+its speed. Is CRT four times faster?
+
+CRT decryption: precompute
+dp = d mod (p - 1), dq = d mod (q - 1), qInv = q^-1 mod p.
+Then m1 = c^dp mod p, m2 = c^dq mod q, h = qInv * (m1 - m2) mod p, m = m2 + h * q.
+
+dp =
+    0x8c5c1730a380655caa47a25f478eee34afd696aebe728b5541f3317852932f701e82efe42d
+    09c87c0cebffedf14f6af9c5f9bb3f0fbdb7d8fa4b62bd9061aac9a67b626624d30a399156ca
+    2c362a0aabf32797e2cefe0557a9131d6e4401531d0b9e8ed4497ba69c564f25b38a5945d2de
+    de5625e54206864e793e2d803f6262916cd784222942cc8895fa0812f5aefcfe796a33143988
+    a6b0086642f57f0362c4fab30050673a92a06b484a00e1485f0c9a8fde3775be85fc08d5b861
+    573741
+
+dq =
+    0x8bcd0b32b88e60dae99704124034b6f9317a4f7d49a6ed5a95a4d4a2f7d189d0ef19b5de24
+    63b332a4fe1a84b032a05423be018a41152f6d8e2f5dff78a6e63c1bdbcabfe1e6e79187204d
+    038de2d5fc8bf1a5644b3948da71cd91b2835642e53a37e3eeb69f37aaf36ab7a19e121e3411
+    2d516c26ee8df22f0033c35bed47b709c8c9a59b1f0e26663e2624c52422d875480d4f79bf9d
+    42cb2fea36c81375146f26f553623a2cad57ee6ec5312664b61c10714e916ba9670073da4158
+    8d45a1
+
+qInv =
+    0x69429ec5055141760fa29d2e2b6828d68505ed15102d15208667e6efcf66085eff4b1aab6c
+    bfa73599721b2b95c2ed5434eacae7c6950a3de95bf522b55eae670666d38ce06be614ea4ce7
+    3acca311f4823cf09804f0350d95c7e4b19066878d66ca17a7b4b637ca449f2178dd9d5d73c0
+    e24c595441a5154819b5be95c90eff0c33c1b967f08670595f2b94316a2b435cdc9e5aa59df3
+    8f95abfbc023acf3979c90c79e8e803589fda0eec68f67dc7947f233a04399072250235549c3
+    942a87
+
+CRT decrypted cleartext = 0x3
+
+                     Plain RSA        CRT
+1000 decryptions     18773 ms         4753 ms
+Speed                163.639 kbps     646.329 kbps
+In Gbps              0.000163639      0.000646329
+
+Is CRT four times faster? Almost: 646.329 / 163.639 = 3.95 times faster in my run,
+just under 4. In theory each CRT exponentiation uses a modulus and exponent half as
+long, so it costs about 1/8 of a full one; two of them cost 1/4, a 4x speedup. CRT
+falls slightly short because it adds fixed extra work that plain RSA does not have
+(reducing c mod p and mod q, and the recombination multiply and mod), and because
+Java's BigInteger uses faster multiplication algorithms (Karatsuba/Toom-Cook) for
+large numbers, so halving the size saves a little less than the simple model predicts.
+Timer and JIT noise also shift the ratio slightly between runs. Even with CRT,
+decryption is still about 1,500 times too slow for 1 Gbps Internet.
